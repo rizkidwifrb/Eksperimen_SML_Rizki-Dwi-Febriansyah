@@ -24,4 +24,4 @@ jobs:
 
       - name: Run Preprocessing Script
         run: |
-          python preprocessing/automate_NamaKamu.py
+          python preprocessing/automate_Rizki-Dwi-Febriansyah.py
