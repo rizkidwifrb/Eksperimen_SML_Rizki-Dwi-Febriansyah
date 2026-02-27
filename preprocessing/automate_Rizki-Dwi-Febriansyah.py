@@ -3,10 +3,17 @@ import os
 from sklearn.preprocessing import LabelEncoder, StandardScaler
 
 
+# ======================
+# LOAD DATA
+# ======================
 def load_data(path):
-    return pd.read_csv(path)
+    df = pd.read_csv(path)
+    return df
 
 
+# ======================
+# PREPROCESSING
+# ======================
 def preprocessing(df):
 
     df.fillna(df.mean(numeric_only=True), inplace=True)
@@ -24,29 +31,30 @@ def preprocessing(df):
     return df
 
 
+# ======================
+# SAVE DATA
+# ======================
 def save_data(df, output_path):
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
     df.to_csv(output_path, index=False)
 
 
+# ======================
+# MAIN PIPELINE
+# ======================
 def main():
 
-    BASE_DIR = os.getcwd()
-
-    input_path = os.path.join(BASE_DIR,
-                              "dataset_raw",
-                              "data.csv")
-
-    output_path = os.path.join(BASE_DIR,
-                               "preprocessing",
-                               "dataset_preprocessing",
-                               "data_clean.csv")
+    # 🔥 PATH AMAN GITHUB ACTIONS
+    input_path = "dataset_raw/data.csv"
+    output_path = "preprocessing/dataset_preprocessing/data_clean.csv"
 
     df = load_data(input_path)
+
     df_clean = preprocessing(df)
+
     save_data(df_clean, output_path)
 
-    print("✅ Workflow preprocessing berhasil!")
+    print("✅ Preprocessing selesai!")
 
 
 if __name__ == "__main__":
