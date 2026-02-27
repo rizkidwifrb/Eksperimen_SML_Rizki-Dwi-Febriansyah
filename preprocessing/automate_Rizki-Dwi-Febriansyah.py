@@ -44,7 +44,10 @@ def save_data(df, output_path):
 # MAIN PIPELINE
 def main():
 
-    input_path = "../dataset_raw/data.csv"
+    input_path = "dataset_raw/data.csv"
+    df = pd.read_csv(input_path)
+
+    print(df.head())
     output_path = "dataset_preprocessing/data_clean.csv"
 
     df = load_data(input_path)
