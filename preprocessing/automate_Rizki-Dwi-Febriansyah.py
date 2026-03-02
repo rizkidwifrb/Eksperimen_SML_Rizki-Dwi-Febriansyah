@@ -74,7 +74,7 @@ def preprocess_data(input_path, output_path):
 # ======================
 if __name__ == "__main__":
 
-    raw_data_path = "../Student_Performance raw/Student_Performance.csv"
+    raw_data_path = "../Student_Performance_raw/Student_Performance.csv"
 
     processed_data_path = (
         "Student_Performance_preprocessing/"
