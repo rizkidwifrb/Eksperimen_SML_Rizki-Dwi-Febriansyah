@@ -1,61 +1,84 @@
 import pandas as pd
+from sklearn.preprocessing import StandardScaler
 import os
-from sklearn.preprocessing import LabelEncoder, StandardScaler
 
 
-# ======================
-# LOAD DATA
-# ======================
-def load_data(path):
-    df = pd.read_csv(path)
-    return df
+def preprocess_data(input_path, output_path):
+    """
+    Fungsi untuk memuat, melakukan preprocessing,
+    dan menyimpan dataset Student Performance
+    """
 
-
-# ======================
-# PREPROCESSING
-# ======================
-def preprocessing(df):
-
-    df.fillna(df.mean(numeric_only=True), inplace=True)
-
-    le = LabelEncoder()
-    cat_cols = df.select_dtypes(include='object').columns
-
-    for col in cat_cols:
-        df[col] = le.fit_transform(df[col])
-
-    scaler = StandardScaler()
-    num_cols = df.select_dtypes(include='number').columns
-    df[num_cols] = scaler.fit_transform(df[num_cols])
-
-    return df
-
-
-# ======================
-# SAVE DATA
-# ======================
-def save_data(df, output_path):
+    # Membuat folder output jika belum ada
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
+
+    # ======================
+    # LOAD DATA
+    # ======================
+    df = pd.read_csv(input_path)
+
+    print("Dataset berhasil dimuat")
+    print(df.head())
+
+    # ======================
+    # DATA CLEANING
+    # ======================
+    df.drop_duplicates(inplace=True)
+    df.dropna(inplace=True)
+
+    # ======================
+    # ENCODING DATA KATEGORIKAL
+    # ======================
+    df["Extracurricular Activities"] = df[
+        "Extracurricular Activities"
+    ].map({
+        "Yes": 1,
+        "No": 0
+    })
+
+    # ======================
+    # FEATURE ENGINEERING
+    # ======================
+    df["study_efficiency"] = (
+        df["Hours Studied"] /
+        (df["Sleep Hours"] + 1)
+    )
+
+    # ======================
+    # SCALING DATA NUMERIK
+    # ======================
+    scaler = StandardScaler()
+
+    numerical_cols = [
+        "Hours Studied",
+        "Previous Scores",
+        "Sleep Hours",
+        "Sample Question Papers Practiced",
+        "study_efficiency"
+    ]
+
+    df[numerical_cols] = scaler.fit_transform(
+        df[numerical_cols]
+    )
+
+    # ======================
+    # SAVE HASIL
+    # ======================
     df.to_csv(output_path, index=False)
 
+    print(f"\nData preprocessing berhasil disimpan di: {output_path}")
+
 
 # ======================
-# MAIN PIPELINE
+# MAIN PROGRAM
 # ======================
-def main():
-
-    # 🔥 PATH AMAN GITHUB ACTIONS
-    input_path = "dataset_raw/data.csv"
-    output_path = "preprocessing/dataset_preprocessing/data_clean.csv"
-
-    df = load_data(input_path)
-
-    df_clean = preprocessing(df)
-
-    save_data(df_clean, output_path)
-
-    print("✅ Preprocessing selesai!")
-
-
 if __name__ == "__main__":
-    main()
+
+    raw_data_path = "../Student_Performance raw/Student_Performance.csv"
+
+    processed_data_path = (
+        "Student_Performance_preprocessing/"
+        "student_performance_processed.csv"
+    )
+
+    preprocess_data(raw_data_path, processed_data_path)
